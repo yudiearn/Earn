@@ -9,10 +9,6 @@ app = Flask(__name__)
 # --- Fungsi deposit_payment yang sudah ada ---
 def deposit_payment(api_key, amount, payment_option):
     url = f"https://backend.saweria.co/donations/{api_key}"
-    headers = {
-        "Content-Type": "application/json"
-    }
-
     payment_type = ""
     if payment_option == '1':
         payment_type = "gcash"
@@ -44,7 +40,7 @@ def deposit_payment(api_key, amount, payment_option):
     }
 
     try:
-        response = requests.post(url, headers=headers, data=json.dumps(payload), proxies=proxies, timeout=30)
+        response = requests.post(url, data=json.dumps(payload), proxies=proxies, timeout=30)
         response.raise_for_status()
         data = response.json()
 
