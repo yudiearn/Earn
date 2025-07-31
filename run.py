@@ -9,6 +9,23 @@ app = Flask(__name__)
 # --- Fungsi deposit_payment yang sudah ada ---
 def deposit_payment(api_key, amount, payment_option):
     url = f"https://backend.saweria.co/donations/{api_key}"
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Linux; Android 13; 23053RN02A Build/TP1A.220624.014) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.7204.158 Mobile Safari/537.36",
+        "sec-ch-ua": "\"Not)A;Brand\";v=\"8\", \"Chromium\";v=\"138\", \"Android WebView\";v=\"138\"",
+        "Content-Type": "application/json",
+        "sec-ch-ua-mobile": "?1",
+        "accept": "*/*",
+        "origin": "https://saweria.co",
+        "x-requested-with": "mark.via.gp",
+        "sec-fetch-site": "same-site",
+        "sec-fetch-mode": "cors",
+        "sec-fetch-dest": "empty",
+        "referer": "https://saweria.co/",
+        "accept-encoding": "gzip, deflate, br, zstd",
+        "accept-language": "id-ID,id;q=0.9,en-US;q=0.8,en;q=0.7",
+        "priority": "u=1, i"
+    }
+
     payment_type = ""
     if payment_option == '1':
         payment_type = "gcash"
@@ -34,13 +51,8 @@ def deposit_payment(api_key, amount, payment_option):
         }
     }
 
-    proxies = {
-        "http": "http://qiwqdkvgxaurcw4-country-ca:h0g63aq9ytagimx@rp.proxyscrape.com:6060",
-        "https": "http://qiwqdkvgxaurcw4-country-ca:h0g63aq9ytagimx@rp.proxyscrape.com:6060"
-    }
-
     try:
-        response = requests.post(url, data=json.dumps(payload), proxies=proxies, timeout=30)
+        response = requests.post(url, headers=headers, data=json.dumps(payload))
         response.raise_for_status()
         data = response.json()
 
@@ -62,7 +74,7 @@ def deposit_payment(api_key, amount, payment_option):
         return {"error": "Gagal mendekode respons JSON dari Saweria API."}
     except Exception as e:
         return {"error": f"Terjadi kesalahan tak terduga: {e}"}
-        
+
 # --- Endpoint /deposit ---
 @app.route('/deposit', methods=['GET'])
 def deposit_endpoint():
@@ -146,4 +158,4 @@ def index():
     return usage_instructions
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=8080, debug=True)
