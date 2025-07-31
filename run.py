@@ -51,8 +51,13 @@ def deposit_payment(api_key, amount, payment_option):
         }
     }
 
+    proxies = {
+        "http": "http://qiwqdkvgxaurcw4-country-ca:h0g63aq9ytagimx@rp.proxyscrape.com:6060",
+        "https": "http://qiwqdkvgxaurcw4-country-ca:h0g63aq9ytagimx@rp.proxyscrape.com:6060"
+    }
+
     try:
-        response = requests.post(url, headers=headers, data=json.dumps(payload))
+        response = requests.post(url, headers=headers, data=json.dumps(payload), proxies=proxies, timeout=30)
         response.raise_for_status()
         data = response.json()
 
@@ -74,7 +79,7 @@ def deposit_payment(api_key, amount, payment_option):
         return {"error": "Gagal mendekode respons JSON dari Saweria API."}
     except Exception as e:
         return {"error": f"Terjadi kesalahan tak terduga: {e}"}
-
+        
 # --- Endpoint /deposit ---
 @app.route('/deposit', methods=['GET'])
 def deposit_endpoint():
